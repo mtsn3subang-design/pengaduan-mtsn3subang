@@ -5,13 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Layanan Pengaduan – MTsN 3 Subang</title>
 <style>
-:root{--bg:#f6f7f2;--ink:#1d2b26;--mute:#5b6a64;--line:#d5dbd2;--green:#1e5a47;--gold:#b6842a;--red:#a23a2b;--card:#fff}
+:root{--bg:#e6f4dc;--ink:#1d2b26;--mute:#4f6258;--line:#bfdcb0;--green:#2f8050;--gold:#b6842a;--red:#a23a2b;--card:#fff}
 @media (prefers-color-scheme:dark){:root{--bg:#141a17;--ink:#e8ece6;--mute:#9fb0a7;--line:#2c3732;--green:#5fb596;--gold:#d9a84a;--red:#e07a69;--card:#1b2420}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 header{border-bottom:3px solid var(--gold);padding:28px 20px 20px;max-width:760px;margin:0 auto}
 h1{font:600 clamp(26px,5vw,38px)/1.15 Georgia,"Times New Roman",serif;margin:0 0 6px;letter-spacing:-.01em}
-header p{margin:0;color:var(--mute);max-width:56ch}
+header{text-align:center}
+.school{font-weight:700;letter-spacing:.06em;color:var(--green);margin:0 0 10px;font-size:clamp(14px,2.6vw,17px)}
+header p{margin:0 auto;color:var(--mute);max-width:56ch}
 main{max-width:760px;margin:0 auto;padding:20px}
 nav{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:22px}
 nav button{background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;font:inherit;color:var(--mute);cursor:pointer}
@@ -40,7 +42,8 @@ textarea{min-height:140px;resize:vertical}
 <body>
 <header>
   <h1>Layanan Pengaduan Masyarakat</h1>
-  <p>MTsN 3 Subang. Sampaikan keluhan, saran, atau laporan Anda. Identitas Anda dijaga kerahasiaannya dan Anda boleh melapor tanpa nama.</p>
+  <div class="school">MADRASAH TSANAWIYAH NEGERI 3 SUBANG</div>
+  <p><em>Sampaikan keluhan, saran, atau laporan Anda. Identitas Anda dijaga kerahasiaannya dan Anda boleh melapor tanpa nama.</em></p>
 </header>
 <main>
   <nav role="tablist">
