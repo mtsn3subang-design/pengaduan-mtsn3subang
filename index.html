@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Layanan Pengaduan – MTsN 3 Subang</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='56' fill='%23e6f4dc' stroke='%23b6842a' stroke-width='6'/%3E%3Crect x='30' y='28' width='60' height='46' rx='12' fill='%232f8050'/%3E%3Cpath d='M44 70v22l18-18z' fill='%232f8050'/%3E%3Cpath d='M46 52l10 10 20-22' stroke='white' stroke-width='8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
 :root{--bg:#e6f4dc;--ink:#1d2b26;--mute:#4f6258;--line:#bfdcb0;--green:#2f8050;--gold:#b6842a;--red:#a23a2b;--card:#fff}
 @media (prefers-color-scheme:dark){:root{--bg:#141a17;--ink:#e8ece6;--mute:#9fb0a7;--line:#2c3732;--green:#5fb596;--gold:#d9a84a;--red:#e07a69;--card:#1b2420}}
@@ -12,6 +13,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-ap
 header{border-bottom:3px solid var(--gold);padding:28px 20px 20px;max-width:760px;margin:0 auto}
 h1{font:600 clamp(26px,5vw,38px)/1.15 Georgia,"Times New Roman",serif;margin:0 0 6px;letter-spacing:-.01em}
 header{text-align:center}
+.logo{width:88px;height:88px;display:block;margin:0 auto 12px}
 .school{font-weight:700;letter-spacing:.06em;color:var(--green);margin:0 0 10px;font-size:clamp(14px,2.6vw,17px)}
 header p{margin:0 auto;color:var(--mute);max-width:56ch}
 main{max-width:760px;margin:0 auto;padding:20px}
@@ -37,16 +39,34 @@ textarea{min-height:140px;resize:vertical}
 .item h3{margin:0 0 4px;font-size:16px}.item p{margin:6px 0;white-space:pre-wrap}
 .meta{color:var(--mute);font-size:14px}
 .hidden{display:none}
+footer{max-width:760px;margin:30px auto 0;padding:20px;border-top:3px solid var(--gold);text-align:center;color:var(--mute);font-size:14px}
+footer strong{display:block;color:var(--green);letter-spacing:.04em;margin-bottom:4px}
+footer p{margin:2px 0}
+.tw{overflow-x:auto;margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:6px 8px;border-bottom:1px solid var(--line)}
+th{color:var(--mute);font-weight:600}
+td.u{min-width:200px;white-space:pre-wrap}
+.btn.alt{background:none;color:var(--green);border:2px solid var(--green);margin-left:8px}
+.rh{font:600 24px Georgia,serif;margin:24px 0 2px}
+@media print{.noprint{display:none!important}body{background:#fff;color:#000}.box{break-inside:avoid;box-shadow:none}main{max-width:none;padding:0}}
 </style>
 </head>
 <body>
-<header>
+<header class="noprint">
+  <svg class="logo" viewBox="0 0 120 120" role="img" aria-label="Logo Layanan Pengaduan Masyarakat MTsN 3 Subang">
+    <circle cx="60" cy="60" r="56" style="fill:var(--bg)" stroke="#b6842a" stroke-width="4"/>
+    <rect x="30" y="28" width="60" height="46" rx="12" style="fill:var(--green)"/>
+    <path d="M44 70v22l18-18z" style="fill:var(--green)"/>
+    <path d="M46 52l10 10 20-22" style="stroke:var(--card)" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="60" cy="103" r="2.5" fill="#b6842a"/>
+  </svg>
   <h1>Layanan Pengaduan Masyarakat</h1>
   <div class="school">MADRASAH TSANAWIYAH NEGERI 3 SUBANG</div>
   <p><em>Sampaikan keluhan, saran, atau laporan Anda. Identitas Anda dijaga kerahasiaannya dan Anda boleh melapor tanpa nama.</em></p>
 </header>
 <main>
-  <nav role="tablist">
+  <nav role="tablist" class="noprint">
     <button role="tab" data-t="kirim" aria-selected="true">Ajukan pengaduan</button>
     <button role="tab" data-t="cek" aria-selected="false">Cek status</button>
     <button role="tab" data-t="admin" aria-selected="false">Petugas</button>
@@ -83,18 +103,30 @@ textarea{min-height:140px;resize:vertical}
   </section>
 
   <section id="admin" class="hidden">
-    <label for="tok">Kata sandi petugas</label>
-    <input id="tok" type="password" autocomplete="current-password">
-    <button class="btn" id="ab">Muat pengaduan</button>
+    <div class="noprint">
+      <label for="tok">Kata sandi petugas</label>
+      <input id="tok" type="password" autocomplete="current-password">
+      <button class="btn" id="ab">Muat pengaduan</button>
+      <button class="btn alt" id="rb" type="button">Laporan per pelapor</button>
+      <button class="btn alt" id="pb" type="button">Cetak / simpan PDF</button>
+    </div>
     <div id="aout" aria-live="polite"></div>
   </section>
 </main>
+
+<footer class="noprint">
+  <strong>MADRASAH TSANAWIYAH NEGERI 3 SUBANG</strong>
+  <p>Layanan Pengaduan Masyarakat</p>
+  <p><em>Setiap pengaduan ditelaah dan identitas pelapor dijaga kerahasiaannya.</em></p>
+  <p>&copy; <span id="yr">2026</span> MTsN 3 Subang. Hak cipta dilindungi.</p>
+</footer>
 
 <script>
 // 1) Tempel URL Web App dari Google Apps Script (berakhiran /exec)
 const API_URL = "https://script.google.com/macros/s/AKfycbwi7lmNUIFmMeZe6jeMl0TmE-HUlZWmjxz2qVQp8U1ntOQYSMcWAX-V-HqiJe4eEfE/exec";
 
 const $ = id => document.getElementById(id);
+$("yr").textContent = new Date().getFullYear();
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const msg = (el, html, cls) => el.innerHTML = `<div class="box ${cls||""}">${html}</div>`;
 
@@ -170,6 +202,32 @@ function render(){
       <button class="btn sm" onclick="save(${i},this)">Simpan perubahan</button>
     </div>`).join("");
 }
+// Laporan per pelapor: kelompokkan berdasarkan nama + kontak
+function report(){
+  if(!rows.length) return msg($("aout"), "Klik “Muat pengaduan” terlebih dahulu, atau belum ada pengaduan masuk.");
+  const g = {};
+  rows.forEach(r => {
+    const anon = !r.nama || r.nama === "Anonim";
+    const key = anon ? "anonim" : r.nama.trim().toLowerCase() + "|" + String(r.kontak||"").trim().toLowerCase();
+    (g[key] = g[key] || {nama: anon ? "Pelapor anonim" : r.nama, kontak: anon ? "" : r.kontak, items: []}).items.push(r);
+  });
+  const groups = Object.values(g).sort((a,b) => b.items.length - a.items.length);
+  const cnt = s => rows.filter(r => r.status === s).length;
+  const tgl = new Date().toLocaleDateString("id-ID", {day:"numeric", month:"long", year:"numeric"});
+  $("aout").innerHTML = `<h2 class="rh">Laporan Pengaduan per Pelapor</h2>
+    <p class="meta">Madrasah Tsanawiyah Negeri 3 Subang · dicetak ${tgl}</p>
+    <p>Total <strong>${rows.length}</strong> pengaduan dari <strong>${groups.length}</strong> pelapor. Baru: ${cnt("Baru")}, Diproses: ${cnt("Diproses")}, Selesai: ${cnt("Selesai")}.</p>` +
+    groups.map(p => `<div class="box item">
+      <h3>${esc(p.nama)}</h3>
+      <div class="meta">${p.kontak ? esc(p.kontak) + " · " : ""}${p.items.length} pengaduan</div>
+      <div class="tw"><table>
+        <tr><th>Tiket</th><th>Tanggal</th><th>Jenis</th><th>Uraian</th><th>Status</th><th>Tanggapan</th></tr>
+        ${p.items.map(r => `<tr><td>${esc(r.ticket)}</td><td>${esc(r.waktu)}</td><td>${esc(r.kategori)}</td><td class="u">${esc(r.uraian)}</td><td>${esc(r.status)}</td><td class="u">${esc(r.tanggapan) || "-"}</td></tr>`).join("")}
+      </table></div></div>`).join("");
+}
+$("rb").onclick = report;
+$("pb").onclick = () => rows.length ? window.print() : msg($("aout"), "Muat pengaduan terlebih dahulu.");
+
 async function save(i, btn){
   btn.disabled = true; btn.textContent = "Menyimpan…";
   try{
