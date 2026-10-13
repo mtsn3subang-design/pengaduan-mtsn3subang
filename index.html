@@ -47,6 +47,8 @@ table{width:100%;border-collapse:collapse;font-size:14px}
 th,td{text-align:left;vertical-align:top;padding:6px 8px;border-bottom:1px solid var(--line)}
 th{color:var(--mute);font-weight:600}
 td.u{min-width:200px;white-space:pre-wrap}
+.btn.alt{background:none;color:var(--green);border:2px solid var(--green);margin-left:8px}
+.rh{font:600 24px Georgia,serif;margin:24px 0 2px}
 @media print{.noprint{display:none!important}body{background:#fff;color:#000}.box{break-inside:avoid;box-shadow:none}main{max-width:none;padding:0}}
 </style>
 </head>
@@ -105,6 +107,8 @@ td.u{min-width:200px;white-space:pre-wrap}
       <label for="tok">Kata sandi petugas</label>
       <input id="tok" type="password" autocomplete="current-password">
       <button class="btn" id="ab">Muat pengaduan</button>
+      <button class="btn alt" id="rb" type="button">Laporan per pelapor</button>
+      <button class="btn alt" id="pb" type="button">Cetak / simpan PDF</button>
     </div>
     <div id="aout" aria-live="polite"></div>
   </section>
@@ -198,6 +202,32 @@ function render(){
       <button class="btn sm" onclick="save(${i},this)">Simpan perubahan</button>
     </div>`).join("");
 }
+// Laporan per pelapor: kelompokkan berdasarkan nama + kontak
+function report(){
+  if(!rows.length) return msg($("aout"), "Klik “Muat pengaduan” terlebih dahulu, atau belum ada pengaduan masuk.");
+  const g = {};
+  rows.forEach(r => {
+    const anon = !r.nama || r.nama === "Anonim";
+    const key = anon ? "anonim" : r.nama.trim().toLowerCase() + "|" + String(r.kontak||"").trim().toLowerCase();
+    (g[key] = g[key] || {nama: anon ? "Pelapor anonim" : r.nama, kontak: anon ? "" : r.kontak, items: []}).items.push(r);
+  });
+  const groups = Object.values(g).sort((a,b) => b.items.length - a.items.length);
+  const cnt = s => rows.filter(r => r.status === s).length;
+  const tgl = new Date().toLocaleDateString("id-ID", {day:"numeric", month:"long", year:"numeric"});
+  $("aout").innerHTML = `<h2 class="rh">Laporan Pengaduan per Pelapor</h2>
+    <p class="meta">Madrasah Tsanawiyah Negeri 3 Subang · dicetak ${tgl}</p>
+    <p>Total <strong>${rows.length}</strong> pengaduan dari <strong>${groups.length}</strong> pelapor. Baru: ${cnt("Baru")}, Diproses: ${cnt("Diproses")}, Selesai: ${cnt("Selesai")}.</p>` +
+    groups.map(p => `<div class="box item">
+      <h3>${esc(p.nama)}</h3>
+      <div class="meta">${p.kontak ? esc(p.kontak) + " · " : ""}${p.items.length} pengaduan</div>
+      <div class="tw"><table>
+        <tr><th>Tiket</th><th>Tanggal</th><th>Jenis</th><th>Uraian</th><th>Status</th><th>Tanggapan</th></tr>
+        ${p.items.map(r => `<tr><td>${esc(r.ticket)}</td><td>${esc(r.waktu)}</td><td>${esc(r.kategori)}</td><td class="u">${esc(r.uraian)}</td><td>${esc(r.status)}</td><td class="u">${esc(r.tanggapan) || "-"}</td></tr>`).join("")}
+      </table></div></div>`).join("");
+}
+$("rb").onclick = report;
+$("pb").onclick = () => rows.length ? window.print() : msg($("aout"), "Muat pengaduan terlebih dahulu.");
+
 async function save(i, btn){
   btn.disabled = true; btn.textContent = "Menyimpan…";
   try{
