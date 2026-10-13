@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Layanan Pengaduan – MTsN 3 Subang</title>
+<style>
+:root{--bg:#f6f7f2;--ink:#1d2b26;--mute:#5b6a64;--line:#d5dbd2;--green:#1e5a47;--gold:#b6842a;--red:#a23a2b;--card:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#141a17;--ink:#e8ece6;--mute:#9fb0a7;--line:#2c3732;--green:#5fb596;--gold:#d9a84a;--red:#e07a69;--card:#1b2420}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{border-bottom:3px solid var(--gold);padding:28px 20px 20px;max-width:760px;margin:0 auto}
+h1{font:600 clamp(26px,5vw,38px)/1.15 Georgia,"Times New Roman",serif;margin:0 0 6px;letter-spacing:-.01em}
+header p{margin:0;color:var(--mute);max-width:56ch}
+main{max-width:760px;margin:0 auto;padding:20px}
+nav{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:22px}
+nav button{background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;font:inherit;color:var(--mute);cursor:pointer}
+nav button[aria-selected=true]{color:var(--green);border-color:var(--green);font-weight:600}
+label{display:block;font-weight:600;margin:16px 0 4px}
+small{color:var(--mute);font-weight:400}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);font:inherit}
+textarea{min-height:140px;resize:vertical}
+:focus-visible{outline:3px solid var(--gold);outline-offset:1px}
+.btn{background:var(--green);color:#fff;border:0;border-radius:6px;padding:11px 20px;font:inherit;font-weight:600;cursor:pointer;margin-top:20px}
+@media (prefers-color-scheme:dark){.btn{color:#0f1512}}
+.btn:disabled{opacity:.5;cursor:wait}
+.btn.sm{padding:7px 14px;margin-top:10px}
+.box{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:16px;margin-top:20px}
+.ok{border-left:5px solid var(--green)}.err{border-left:5px solid var(--red);color:var(--red)}
+.ticket{font:700 26px Georgia,serif;letter-spacing:.04em;color:var(--green)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.row2{grid-template-columns:1fr}}
+.badge{display:inline-block;padding:2px 10px;border-radius:99px;font-size:13px;font-weight:600;border:1px solid var(--line)}
+.s-Baru{color:var(--red)}.s-Diproses{color:var(--gold)}.s-Selesai{color:var(--green)}
+.item h3{margin:0 0 4px;font-size:16px}.item p{margin:6px 0;white-space:pre-wrap}
+.meta{color:var(--mute);font-size:14px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header>
+  <h1>Layanan Pengaduan Masyarakat</h1>
+  <p>MTsN 3 Subang. Sampaikan keluhan, saran, atau laporan Anda. Identitas Anda dijaga kerahasiaannya dan Anda boleh melapor tanpa nama.</p>
+</header>
+<main>
+  <nav role="tablist">
+    <button role="tab" data-t="kirim" aria-selected="true">Ajukan pengaduan</button>
+    <button role="tab" data-t="cek" aria-selected="false">Cek status</button>
+    <button role="tab" data-t="admin" aria-selected="false">Petugas</button>
+  </nav>
+
+  <section id="kirim">
+    <form id="f">
+      <div class="row2">
+        <div><label for="nama">Nama <small>(boleh dikosongkan)</small></label><input id="nama" maxlength="100" autocomplete="name"></div>
+        <div><label for="kontak">No. HP / email <small>(agar bisa dihubungi)</small></label><input id="kontak" maxlength="100"></div>
+      </div>
+      <label for="kategori">Jenis pengaduan</label>
+      <select id="kategori">
+        <option>Layanan akademik dan administrasi</option>
+        <option>Sarana dan prasarana</option>
+        <option>Sikap atau perilaku pendidik/tenaga kependidikan</option>
+        <option>Perundungan atau kekerasan</option>
+        <option>Pungutan atau keuangan</option>
+        <option>Saran dan masukan</option>
+        <option>Lainnya</option>
+      </select>
+      <label for="uraian">Uraian pengaduan <small>(apa, kapan, di mana, siapa yang terlibat)</small></label>
+      <textarea id="uraian" required minlength="10" maxlength="3000"></textarea>
+      <button class="btn" id="kb" type="submit">Kirim pengaduan</button>
+    </form>
+    <div id="kout" aria-live="polite"></div>
+  </section>
+
+  <section id="cek" class="hidden">
+    <label for="tk">Nomor tiket</label>
+    <input id="tk" placeholder="ADU-260101-0001">
+    <button class="btn" id="cb">Cek status</button>
+    <div id="cout" aria-live="polite"></div>
+  </section>
+
+  <section id="admin" class="hidden">
+    <label for="tok">Kata sandi petugas</label>
+    <input id="tok" type="password" autocomplete="current-password">
+    <button class="btn" id="ab">Muat pengaduan</button>
+    <div id="aout" aria-live="polite"></div>
+  </section>
+</main>
+
+<script>
+// 1) Tempel URL Web App dari Google Apps Script (berakhiran /exec)
+const API_URL = "PASTE_URL_WEB_APP_DI_SINI";
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const msg = (el, html, cls) => el.innerHTML = `<div class="box ${cls||""}">${html}</div>`;
+
+async function api(body){
+  if(API_URL.startsWith("PASTE")) throw new Error("URL Apps Script belum diisi di index.html.");
+  const r = await fetch(API_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(body)});
+  const j = await r.json();
+  if(!j.ok) throw new Error(j.error || "Terjadi kesalahan.");
+  return j;
+}
+async function apiGet(params){
+  if(API_URL.startsWith("PASTE")) throw new Error("URL Apps Script belum diisi di index.html.");
+  const r = await fetch(API_URL + "?" + new URLSearchParams(params));
+  const j = await r.json();
+  if(!j.ok) throw new Error(j.error || "Terjadi kesalahan.");
+  return j;
+}
+
+// Tab
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("nav button").forEach(x => x.setAttribute("aria-selected", x===b));
+  ["kirim","cek","admin"].forEach(t => $(t).classList.toggle("hidden", t!==b.dataset.t));
+});
+
+// Kirim pengaduan
+$("f").onsubmit = async e => {
+  e.preventDefault();
+  $("kb").disabled = true; $("kb").textContent = "Mengirim…";
+  try{
+    const j = await api({action:"submit", nama:$("nama").value, kontak:$("kontak").value, kategori:$("kategori").value, uraian:$("uraian").value});
+    msg($("kout"), `Pengaduan diterima. Simpan nomor tiket Anda untuk memantau tindak lanjut:<div class="ticket">${esc(j.ticket)}</div>`, "ok");
+    $("f").reset();
+  }catch(err){ msg($("kout"), "Pengaduan belum terkirim: " + esc(err.message), "err"); }
+  $("kb").disabled = false; $("kb").textContent = "Kirim pengaduan";
+};
+
+// Cek status
+$("cb").onclick = async () => {
+  const t = $("tk").value.trim();
+  if(!t) return msg($("cout"), "Masukkan nomor tiket.", "err");
+  $("cb").disabled = true;
+  try{
+    const j = await apiGet({action:"status", ticket:t});
+    msg($("cout"), `<div class="ticket">${esc(j.ticket)}</div>
+      <p><span class="badge s-${esc(j.status)}">${esc(j.status)}</span></p>
+      <p class="meta">${esc(j.kategori)} · diterima ${esc(j.waktu)} · diperbarui ${esc(j.diperbarui)}</p>
+      <p><strong>Tanggapan sekolah:</strong><br>${esc(j.tanggapan) || "Belum ada tanggapan. Pengaduan Anda sedang ditelaah."}</p>`, "ok");
+  }catch(err){ msg($("cout"), esc(err.message), "err"); }
+  $("cb").disabled = false;
+};
+
+// Petugas
+let rows = [];
+$("ab").onclick = async () => {
+  $("ab").disabled = true;
+  try{
+    rows = (await apiGet({action:"list", token:$("tok").value})).rows;
+    render();
+  }catch(err){ msg($("aout"), esc(err.message), "err"); }
+  $("ab").disabled = false;
+};
+function render(){
+  if(!rows.length) return msg($("aout"), "Belum ada pengaduan masuk.");
+  $("aout").innerHTML = `<p class="meta">${rows.length} pengaduan. Data lengkap juga tersimpan di Google Spreadsheet.</p>` + rows.map((r,i) => `
+    <div class="box item">
+      <h3>${esc(r.ticket)} <span class="badge s-${esc(r.status)}">${esc(r.status)}</span></h3>
+      <div class="meta">${esc(r.kategori)} · ${esc(r.waktu)} · ${esc(r.nama)}${r.kontak ? " · " + esc(r.kontak) : ""}</div>
+      <p>${esc(r.uraian)}</p>
+      <div class="row2">
+        <div><label>Status</label><select id="st${i}">${["Baru","Diproses","Selesai"].map(s=>`<option ${s===r.status?"selected":""}>${s}</option>`).join("")}</select></div>
+        <div><label>Tanggapan untuk pelapor</label><textarea id="tg${i}" style="min-height:70px">${esc(r.tanggapan)}</textarea></div>
+      </div>
+      <button class="btn sm" onclick="save(${i},this)">Simpan perubahan</button>
+    </div>`).join("");
+}
+async function save(i, btn){
+  btn.disabled = true; btn.textContent = "Menyimpan…";
+  try{
+    await api({action:"update", token:$("tok").value, ticket:rows[i].ticket, status:$("st"+i).value, tanggapan:$("tg"+i).value});
+    rows[i].status = $("st"+i).value; rows[i].tanggapan = $("tg"+i).value;
+    btn.textContent = "Tersimpan";
+  }catch(err){ alert(err.message); btn.textContent = "Simpan perubahan"; }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
